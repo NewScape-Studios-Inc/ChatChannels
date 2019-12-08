@@ -49,6 +49,7 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.14.4-28.1.86'
 	compile fg.deobf('mezz.jei:jei-1.14.4:+')
 	compile fg.deobf('mcp.mobius.waila:Hwyla:1.10+')
+	compile fileTree(dir: 'libs', include: '*.jar')
 }
 
 jar {
