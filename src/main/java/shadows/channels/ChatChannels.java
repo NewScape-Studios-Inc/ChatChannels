@@ -22,6 +22,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
+import shadows.perms.Permissions;
 import shadows.placebo.config.Configuration;
 
 @Mod(ChatChannels.MODID)
@@ -62,8 +63,10 @@ public class ChatChannels {
 		disp.register(Commands.literal("join").then(Commands.argument("channel", StringArgumentType.string()).suggests((c, b) -> ISuggestionProvider.suggest(Channel.REGISTRY.keySet(), b)).executes(c -> {
 			Channel channel = Channel.REGISTRY.get(c.getArgument("channel", String.class));
 			if (channel != null) {
-				channel.addListener(c.getSource().asPlayer().getUniqueID());
-				c.getSource().sendFeedback(new StringTextComponent("Joined channel " + channel.id), false);
+				if (Permissions.HANDLER.hasPermission(c.getSource().asPlayer().getUniqueID(), MODID + "." + channel.id)) {
+					channel.addListener(c.getSource().asPlayer().getUniqueID());
+					c.getSource().sendFeedback(new StringTextComponent("Joined channel " + channel.id), false);
+				} else c.getSource().sendErrorMessage(new StringTextComponent("Missing required permission: " + MODID + "." + channel.id));
 			} else c.getSource().sendErrorMessage(new StringTextComponent("Channel " + c.getArgument("channel", String.class) + " does not exist."));
 			return 1;
 		})));
